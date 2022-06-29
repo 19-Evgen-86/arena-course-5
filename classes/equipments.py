@@ -8,16 +8,22 @@ import json
 
 @dataclass
 class Armor:
-    pass
+    name: str
+    min_damage: float
+    max_damage: float
+    stamina_per_hit: float
 
 
 @dataclass
 class Weapon:
-    pass
+    name: str
+    min_damage: float
+    max_damage: float
+    stamina_per_hit: float
 
     @property
     def damage(self):
-        pass
+        return uniform(self.min_damage, self.max_damage)
 
 
 @dataclass
@@ -27,12 +33,11 @@ class EquipmentData:
 
 
 class Equipment:
-
     def __init__(self):
         self.equipment = self._get_equipment_data()
 
     def get_weapon(self, weapon_name) -> Weapon:
-        # TODO возвращает объект оружия по имени
+
         pass
 
     def get_armor(self, armor_name) -> Armor:
@@ -51,8 +56,8 @@ class Equipment:
     def _get_equipment_data() -> EquipmentData:
         # TODO этот метод загружает json в переменную EquipmentData
         equipment_file = open("./data/equipment.json")
-        data = json.load( ... )
-        equipment_schema = marshmallow_dataclass.class_schema( ... )
+        data = json.load(equipment_file)
+        equipment_schema = marshmallow_dataclass.class_schema(EquipmentData)
         try:
             return equipment_schema().load(data)
         except marshmallow.exceptions.ValidationError:

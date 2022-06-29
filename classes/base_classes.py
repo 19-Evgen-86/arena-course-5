@@ -1,21 +1,26 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
 class BaseUnitClass:
+    """
+    класс (воин,маг,разбойник) юнита
+    """
     name: str
     max_health: float
     max_stamina: float
     attack: float
     stamina: float
     armor: float
-    skill: BaseSkillClass
+    skill: Skill
+
 
 class BaseSkillClass(ABC):
     """
-    Базовый класс умения
+    класс умения
     """
     user = None
     target = None
@@ -70,25 +75,23 @@ class BaseUnit(ABC):
     """
     Базовый класс юнита
     """
+
     def __init__(self, name: str, unit_class: BaseUnitClass):
-        """
-        При инициализации класса Unit используем свойства класса UnitClass
-        """
         self.name = name
         self.unit_class = unit_class
-        self.hp = unit_class.max_health
-        self.stamina = unit_class.max_stamina
+        self._hp = unit_class.max_health
+        self._stamina = unit_class.max_stamina
         self.weapon = ...
         self.armor = ...
         self._is_skill_used = ...
 
     @property
     def health_points(self):
-        return # TODO возвращаем аттрибут hp в красивом виде
+        return f"У {self.name} осталось {self._hp} очков здоровья"
 
     @property
     def stamina_points(self):
-        return  # TODO возвращаем аттрибут hp в красивом виде
+        return f"У {self.name} осталось {self._stamina} очков выносливости"
 
     def equip_weapon(self, weapon: Weapon):
         # TODO присваиваем нашему герою новое оружие
@@ -96,9 +99,10 @@ class BaseUnit(ABC):
 
     def equip_armor(self, armor: Armor):
         # TODO одеваем новую броню
-        return f"{self.name} экипирован броней {self.weapon.name}"
+        return f"{self.name} экипирован броней {self.armor.name}"
 
     def _count_damage(self, target: BaseUnit) -> int:
+        damage: int
         # TODO Эта функция должна содержать:
         #  логику расчета урона игрока
         #  логику расчета брони цели
