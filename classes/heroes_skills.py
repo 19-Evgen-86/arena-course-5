@@ -2,11 +2,11 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from unit import BaseUnit
+# if TYPE_CHECKING:
+#     # from unit import BaseUnit
 
 
-class Skill(ABC):
+class BaseSkillClass(ABC):
     """
     Базовый класс умения
     """
@@ -57,3 +57,22 @@ class Skill(ABC):
         if self._is_stamina_enough:
             return self.skill_effect()
         return f"{self.user.name} попытался использовать {self.name} но у него не хватило выносливости."
+
+
+class FuryPunch(BaseSkillClass):
+    name = "кулак ярости"
+    stamina = 20
+    damage = 35
+
+    def skill_effect(self):
+        # TODO логика использования скилла -> return str
+        # TODO в классе нам доступны экземпляры user и target - можно использовать любые их методы
+        # TODO именно здесь происходит уменшение стамины у игрока применяющего умение и
+        # TODO уменьшение здоровья цели.
+        # TODO результат применения возвращаем строкой
+
+
+
+
+
+        pass
