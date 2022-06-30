@@ -14,7 +14,6 @@ class Armor:
     stamina_per_turn: float
 
 
-
 @dataclass
 class Weapon:
     id: int
@@ -41,20 +40,24 @@ class Equipment:
         self.equipment = self._get_equipment_data()
 
     def get_weapon(self, weapon_name) -> Weapon:
-
-        pass
+        # возвращает объект оружия по имени
+        for equip in self.equipment.weapons:
+            if equip.name == weapon_name:
+                return equip
 
     def get_armor(self, armor_name) -> Armor:
-        # TODO возвращает объект брони по имени
-        pass
+        # возвращает объект брони по имени
+        for equip in self.equipment.armors:
+            if equip.name == armor_name:
+                return equip
 
     def get_weapons_names(self) -> list:
-        # TODO возвращаем список с оружием
-        return list(self.equipment.weapons)
+        # возвращаем список с оружием
+        return self.equipment.weapons
 
     def get_armors_names(self) -> list:
-        # TODO возвращаем список с броней
-        pass
+        # возвращаем список с броней
+        return self.equipment.armors
 
     @staticmethod
     def _get_equipment_data() -> EquipmentData:
@@ -66,6 +69,3 @@ class Equipment:
             return equipment_schema().load(data)
         except marshmallow.exceptions.ValidationError:
             raise ValueError
-
-
-
