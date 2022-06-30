@@ -1,11 +1,11 @@
 from classes.base_classes import BaseUnitClass
-from classes.skill_classes import FuryPunch
+from classes.skill_classes import FistOfFury, PreciseKick
 
-WarriorClass = BaseUnitClass(name="Воин", max_health=100, max_stamina=80, attack=15, stamina=50, armor=10,
-                             skill=FuryPunch())
+WarriorClass = BaseUnitClass(name="Воин", max_health=50, max_stamina=20, attack=1.7, stamina=1.3, armor=1.2,
+                             skill=FistOfFury())
 
-RogueClass = BaseUnitClass(name="Разбойник", max_health=80, max_stamina=100, attack=10, stamina=70, armor=7)
-
+RogueClass = BaseUnitClass(name="Разбойник", max_health=30, max_stamina=30, attack=1.1, stamina=1.5, armor=0.8,
+                           skill=PreciseKick())
 
 unit_classes = {
     RogueClass.name: RogueClass,

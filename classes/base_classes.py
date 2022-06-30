@@ -5,6 +5,8 @@ from typing import Optional
 
 from classes.equipments import Weapon, Armor
 
+STAMINA_TURN_UP = 1
+
 
 @dataclass
 class BaseUnitClass:
@@ -17,10 +19,10 @@ class BaseUnitClass:
     attack: float
     stamina: float
     armor: float
-    skill: BaseSkillClass
+    skill: BaseSkill
 
 
-class BaseSkillClass(ABC):
+class BaseSkill(ABC):
     """
     класс умения
     """
@@ -81,44 +83,55 @@ class BaseUnit(ABC):
     def __init__(self, name: str, unit_class: BaseUnitClass):
         self.name = name
         self.unit_class = unit_class
-        self._hp = unit_class.max_health
-        self._stamina = unit_class.max_stamina
-        self.weapon: Weapon
-        self.armor: Armor
+        self.hp = unit_class.max_health
+        self.stamina = unit_class.max_stamina
+        self.weapon: Weapon = None
+        self.armor: Armor = None
         self._is_skill_used: bool = False
 
     @property
     def health_points(self):
-        return f"У {self.name} осталось {self._hp} очков здоровья"
+        return f"У {self.name} осталось {self.hp} очков здоровья"
 
     @property
     def stamina_points(self):
-        return f"У {self.name} осталось {self._stamina} очков выносливости"
+        return f"У {self.name} осталось {self.stamina} очков выносливости"
 
     def equip_weapon(self, weapon: Weapon):
-        # TODO присваиваем нашему герою новое оружие
+        # присваиваем нашему герою новое оружие
+        self.weapon = weapon
         return f"{self.name} экипирован оружием {self.weapon.name}"
 
     def equip_armor(self, armor: Armor):
-        # TODO одеваем новую броню
+        #  одеваем новую броню
+        self.armor = armor
         return f"{self.name} экипирован броней {self.armor.name}"
 
     def _count_damage(self, target: BaseUnit) -> int:
+        stamina_turn_up = STAMINA_TURN_UP * self.unit_class.stamina
         damage: int
-        # TODO Эта функция должна содержать:
-        #  логику расчета урона игрока
-        #  логику расчета брони цели
-        #  здесь же происходит уменьшение выносливости атакующего при ударе
-        #  и уменьшение выносливости защищающегося при использовании брони
-        #  если у защищающегося нехватает выносливости - его броня игнорируется
-        #  после всех расчетов цель получает урон - target.get_damage(damage)
-        #  и возвращаем предполагаемый урон для последующего вывода пользователю в текстовом виде
-        return damage
+        # расчета урона игрока
+        unit_damage = self.weapon.damage * self.unit_class.attack
+        #  расчет брони цели
+        target_defence = self.armor.defence * self.unit_class.armor
+        # выносливость после удара
+        if self.stamina >= self.weapon.stamina_per_hit:
+            self.stamina = self.stamina - self.weapon.stamina_per_hit + stamina_turn_up
+            if target.stamina < target.armor.stamina_per_turn:
+                damage = unit_damage - target_defence
+                target.get_damage(damage)
+                return damage
+            else:
+                damage = unit_damage - target_defence
+                target.get_damage(damage)
+                return damage
+        else:
+            self.stamina += stamina_turn_up
+            return None
 
     def get_damage(self, damage: int) -> Optional[int]:
-        # TODO получение урона целью
-        #      присваиваем новое значение для аттрибута self.hp
-        pass
+        self.hp -= damage
+        return damage
 
     @abstractmethod
     def hit(self, target: BaseUnit) -> str:

@@ -1,16 +1,25 @@
-from classes.base_classes import BaseSkillClass
+from classes.base_classes import BaseSkill
 
 
-class FuryPunch(BaseSkillClass):
+class FistOfFury(BaseSkill):
     name = "Кулак ярости"
-    stamina = 20
-    damage = 35
+    stamina = 8
+    damage = 12
 
     def skill_effect(self):
-        # TODO логика использования скилла -> return str
-        # TODO в классе нам доступны экземпляры user и target - можно использовать любые их методы
-        # TODO именно здесь происходит уменшение стамины у игрока применяющего умение и
-        # TODO уменьшение здоровья цели.
-        # TODO результат применения возвращаем строкой
+        self.user.stamina -= self.stamina
+        damage = self.damage - self.target.armor.defence * self.target.unit_class.armor
+        self.target.hp -= self.damage - damage
+        return f"{self.user.name} применил {self.name} и нанес {damage} урона {self.target.name}"
 
-        pass
+
+class PreciseKick(BaseSkill):
+    name = "Точный пинок"
+    stamina = 10
+    damage = 18
+
+    def skill_effect(self):
+        self.user.stamina -= self.stamina
+        damage = self.damage - self.target.armor.defence * self.target.unit_class.armor
+        self.target.hp -= self.damage - damage
+        return f"{self.user.name} применил {self.name} и нанес {damage} урона {self.target.name}"
