@@ -3,6 +3,8 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Optional
 
+from classes.equipments import Weapon, Armor
+
 
 @dataclass
 class BaseUnitClass:
@@ -15,7 +17,7 @@ class BaseUnitClass:
     attack: float
     stamina: float
     armor: float
-    skill: Skill
+    skill: BaseSkillClass
 
 
 class BaseSkillClass(ABC):
@@ -81,9 +83,9 @@ class BaseUnit(ABC):
         self.unit_class = unit_class
         self._hp = unit_class.max_health
         self._stamina = unit_class.max_stamina
-        self.weapon = ...
-        self.armor = ...
-        self._is_skill_used = ...
+        self.weapon: Weapon
+        self.armor: Armor
+        self._is_skill_used: bool = False
 
     @property
     def health_points(self):
