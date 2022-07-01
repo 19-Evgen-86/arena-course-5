@@ -127,7 +127,7 @@ class BaseUnit(ABC):
                 return damage
         else:
             self.stamina += stamina_turn_up
-            return None
+            return 0
 
     def get_damage(self, damage: int) -> Optional[int]:
         self.hp -= damage
@@ -151,6 +151,7 @@ class BaseUnit(ABC):
         """
         if self._is_skill_used:
             return "Навык использован"
-
         else:
-            ...
+            self._is_skill_used = True
+            self.unit_class.skill.use(user=self, target=target)
+
