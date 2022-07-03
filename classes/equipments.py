@@ -53,11 +53,15 @@ class Equipment:
 
     def get_weapons_names(self) -> list:
         # возвращаем список с оружием
-        return self.equipment.weapons
+        return [weapon.name
+                for weapon in self.equipment.weapons
+                ]
 
     def get_armors_names(self) -> list:
         # возвращаем список с броней
-        return self.equipment.armors
+        return [armor.name
+                for armor in self.equipment.armors
+                ]
 
     @staticmethod
     def _get_equipment_data() -> EquipmentData:

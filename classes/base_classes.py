@@ -5,8 +5,6 @@ from typing import Optional
 
 from classes.equipments import Weapon, Armor
 
-STAMINA_TURN_UP = 1
-
 
 @dataclass
 class BaseUnitClass:
@@ -108,30 +106,29 @@ class BaseUnit(ABC):
         return f"{self.name} экипирован броней {self.armor.name}"
 
     def _count_damage(self, target: BaseUnit) -> int:
-        stamina_turn_up = STAMINA_TURN_UP * self.unit_class.stamina
+        stamina_turn_up = 1 * self.unit_class.stamina
         damage: int
         # расчета урона игрока
         unit_damage = self.weapon.damage * self.unit_class.attack
         #  расчет брони цели
         target_defence = self.armor.defence * self.unit_class.armor
         # выносливость после удара
-        if self.stamina >= self.weapon.stamina_per_hit:
-            self.stamina = self.stamina - self.weapon.stamina_per_hit + stamina_turn_up
-            if target.stamina < target.armor.stamina_per_turn:
-                damage = unit_damage - target_defence
-                target.get_damage(damage)
-                return damage
-            else:
-                damage = unit_damage - target_defence
-                target.get_damage(damage)
-                return damage
+        self.stamina -= self.weapon.stamina_per_hit + stamina_turn_up
+
+        if target.stamina > target.armor.stamina_per_turn * target.unit_class.stamina:
+            target.stamina -= target.armor.stamina_per_turn * target.unit_class.stamina
+            unit_damage -= target_defence
+            return target.get_damage(unit_damage)
         else:
-            self.stamina += stamina_turn_up
-            return 0
+            return target.get_damage(unit_damage)
 
     def get_damage(self, damage: int) -> Optional[int]:
-        self.hp -= damage
-        return damage
+
+        if damage > 0:
+            self.hp -= damage
+            return round(damage, 1)
+        else:
+            return 0
 
     @abstractmethod
     def hit(self, target: BaseUnit) -> str:
@@ -153,5 +150,4 @@ class BaseUnit(ABC):
             return "Навык использован"
         else:
             self._is_skill_used = True
-            self.unit_class.skill.use(user=self, target=target)
-
+            return self.unit_class.skill.use(user=self, target=target)

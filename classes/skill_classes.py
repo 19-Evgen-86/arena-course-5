@@ -8,9 +8,8 @@ class FistOfFury(BaseSkill):
 
     def skill_effect(self):
         self.user.stamina -= self.stamina
-        damage = self.damage - self.target.armor.defence * self.target.unit_class.armor
-        self.target.hp -= self.damage - damage
-        return f"{self.user.name} применил {self.name} и нанес {damage} урона {self.target.name}"
+        self.target.get_damage(self.damage)
+        return f"{self.user.name} применил {self.name} и нанес {self.damage} урона {self.target.name}"
 
 
 class PreciseKick(BaseSkill):
@@ -20,6 +19,5 @@ class PreciseKick(BaseSkill):
 
     def skill_effect(self):
         self.user.stamina -= self.stamina
-        damage = self.damage - self.target.armor.defence * self.target.unit_class.armor
-        self.target.hp -= self.damage - damage
-        return f"{self.user.name} применил {self.name} и нанес {damage} урона {self.target.name}"
+        self.target.get_damage(self.damage)
+        return f"{self.user.name} применил {self.name} и нанес {self.damage} урона {self.target.name}"
