@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   app:
-    image: egrigorev/lesson_26:$GITHUB_REF_NAME-$GITHUB_RUN_ID
+    image: egrigorev/course_5:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     command: gunicorn --bind 0.0.0.0:5000 wsgi:app
     restart: always
 
