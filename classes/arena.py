@@ -35,7 +35,6 @@ class Arena(metaclass=BaseSingleton):
         # TODO если Здоровья игроков в порядке то ничего не происходит
         if self.player.hp <= 0 and self.enemy.hp <= 0:
             self.battle_result = "Ничья"
-
         elif self.enemy.hp <= 0:
             self.battle_result = "Игрок выиграл битву"
         elif self.player.hp <= 0:
@@ -71,7 +70,7 @@ class Arena(metaclass=BaseSingleton):
         # TODO и вызываем функцию self.enemy.hit(self.player) - ответный удар врага
         result = self._check_players_hp()
         if result:
-            return result
+            self._end_game()
         else:
             self._stamina_regeneration()
             return self.enemy.hit(self.player)

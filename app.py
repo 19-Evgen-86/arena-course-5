@@ -69,7 +69,8 @@ def pass_turn():
 @app.route("/fight/end-fight")
 def end_fight():
     # TODO кнопка завершить игру - переход в главное меню
-    return render_template("index.html", heroes=heroes)
+    heroes = {}
+    return render_template("index.html")
 
 
 @app.route("/choose-hero/", methods=['get', "post"])
