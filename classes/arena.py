@@ -82,7 +82,7 @@ class Arena(metaclass=BaseSingleton):
         # TODO возвращаем результат
         self._instances = {}
         self.game_is_running = False
-        return "end game"
+        return self.battle_result
 
     def player_hit(self):
         # TODO КНОПКА УДАР ИГРОКА -> return result: str
@@ -90,8 +90,8 @@ class Arena(metaclass=BaseSingleton):
         # TODO запускаем следующий ход
         # TODO возвращаем результат удара строкой
         result = self.player.hit(self.enemy)
-        self.next_turn()
-        return result
+        turn_result = self.next_turn()
+        return f"{result} {turn_result}"
 
     def player_use_skill(self):
         # TODO КНОПКА ИГРОК ИСПОЛЬЗУЕТ УМЕНИЕ
@@ -99,5 +99,5 @@ class Arena(metaclass=BaseSingleton):
         # TODO включаем следующий ход
         # TODO возвращаем результат удара строкой
         result = self.player.use_skill(self.enemy)
-        self.next_turn()
-        return result
+        turn_result = self.next_turn()
+        return f"{result} {turn_result}"

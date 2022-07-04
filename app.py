@@ -1,17 +1,15 @@
-from flask_restx import Resource
-
 from flask import Flask, render_template, request, redirect, url_for
 
 from classes.arena import Arena
-from classes.base_classes import BaseUnit
 from classes.equipments import Equipment
 from classes.player_classes import unit_classes
 from classes.players import PlayerUnit, EnemyUnit
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="templates")
 
-heroes = {
-}
+heroes = {}
+
+equipment = Equipment()
 # TODO инициализируем класс арены
 arena = Arena()
 
@@ -19,7 +17,7 @@ arena = Arena()
 @app.route("/")
 def menu_page():
     # TODO рендерим главное меню (шаблон index.html)
-    return render_template("index.html ")
+    return render_template("index.html")
 
 
 @app.route("/fight/")
@@ -41,8 +39,7 @@ def hit():
     else:
         result = arena.battle_result
 
-
-    return render_template('fight.html', heroes=heroes,result=result)
+    return render_template('fight.html', heroes=heroes, result=result)
 
 
 @app.route("/fight/use-skill")
@@ -76,57 +73,57 @@ def end_fight():
     return render_template("index.html", heroes=heroes)
 
 
-@app.route("/choose-hero/", methods=['post', 'get'])
-class ChooseHero(Resource):
+@app.route("/choose-hero/", methods=['get', "post"])
+def choose_hero():
     # TODO кнопка выбор героя. 2 метода GET и POST
     # TODO на GET отрисовываем форму.
     # TODO на POST отправляем форму и делаем редирект на эндпоинт choose enemy
-    def get(self):
+    if request.method == 'GET':
         result = {
             "header": "Выбирете героя",
             "classes": unit_classes,
-            "weapon": Equipment().get_weapons_names(),
-            "armor": Equipment().get_armors_names()
+            "weapons": equipment.get_weapons_names(),
+            "armors": equipment.get_armors_names()
         }
         return render_template('hero_choosing.html', result=result)
 
-    def post(self):
+    if request.method == "POST":
         name = request.form['name']
         armor = request.form['armor']
         weapon = request.form['weapon']
         unit_class = request.form['unit_class']
         player = PlayerUnit(name=name,
                             unit_class=unit_classes.get(unit_class))
-        player.equip_armor(Equipment().get_armor(armor))
-        player.equip_weapon(Equipment().get_weapon(weapon))
+        player.equip_armor(equipment.get_armor(armor))
+        player.equip_weapon(equipment.get_weapon(weapon))
         heroes['player'] = player
-        return redirect(url_for('choose-enemy'))
+        return redirect(url_for('choose_enemy'))
 
 
 @app.route("/choose-enemy/", methods=['post', 'get'])
-class choose_enemy(Resource):
+def choose_enemy():
     # TODO кнопка выбор соперников. 2 метода GET и POST
     # TODO также на GET отрисовываем форму.
     # TODO а на POST отправляем форму и делаем редирект на начало битвы
-    def get(self):
+    if request.method == "GET":
         result = {
             "header": "Выбирете соперника",
             "classes": unit_classes,
-            "weapon": Equipment().get_weapons_names(),
-            "armor": Equipment().get_armors_names()
+            "weapons": equipment.get_weapons_names(),
+            "armors": equipment.get_armors_names()
         }
         return render_template('hero_choosing.html', result=result)
 
-    def post(self):
+    if request.method == "POST":
         name = request.form['name']
         armor = request.form['armor']
         weapon = request.form['weapon']
         unit_class = request.form['unit_class']
-        ememy = EnemyUnit(name=name,
+        enemy = EnemyUnit(name=name,
                           unit_class=unit_classes.get(unit_class))
-        ememy.equip_armor(Equipment().get_armor(armor))
-        ememy.equip_weapon(Equipment().get_weapon(weapon))
-        heroes['ememy'] = ememy
+        enemy.equip_armor(equipment.get_armor(armor))
+        enemy.equip_weapon(equipment.get_weapon(weapon))
+        heroes['enemy'] = enemy
         return redirect(url_for('start_fight'))
 
 

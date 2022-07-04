@@ -89,11 +89,11 @@ class BaseUnit(ABC):
 
     @property
     def health_points(self):
-        return f"У {self.name} осталось {self.hp} очков здоровья"
+        return f"У {self.name} осталось здоровья {round(self.hp, 1)}"
 
     @property
     def stamina_points(self):
-        return f"У {self.name} осталось {self.stamina} очков выносливости"
+        return f"У {self.name} осталось выносливости {round(self.stamina, 1)}"
 
     def equip_weapon(self, weapon: Weapon):
         # присваиваем нашему герою новое оружие
@@ -105,22 +105,29 @@ class BaseUnit(ABC):
         self.armor = armor
         return f"{self.name} экипирован броней {self.armor.name}"
 
-    def _count_damage(self, target: BaseUnit) -> int:
+    def _stamina_per_turn(self):
         stamina_turn_up = 1 * self.unit_class.stamina
+        # выносливась после удара
+        stamina = self.stamina - self.weapon.stamina_per_hit + stamina_turn_up
+        if self.stamina - stamina < 0:
+            self.stamina = 0
+        else:
+            self.stamina = stamina
+
+    def _count_damage(self, target: BaseUnit) -> int:
+        self._stamina_per_turn()
         damage: int
         # расчета урона игрока
         unit_damage = self.weapon.damage * self.unit_class.attack
         #  расчет брони цели
         target_defence = self.armor.defence * self.unit_class.armor
         # выносливость после удара
-        self.stamina -= self.weapon.stamina_per_hit + stamina_turn_up
 
         if target.stamina > target.armor.stamina_per_turn * target.unit_class.stamina:
-            target.stamina -= target.armor.stamina_per_turn * target.unit_class.stamina
+            target._stamina_per_turn()
             unit_damage -= target_defence
-            return target.get_damage(unit_damage)
-        else:
-            return target.get_damage(unit_damage)
+
+        return target.get_damage(unit_damage)
 
     def get_damage(self, damage: int) -> Optional[int]:
 

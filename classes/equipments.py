@@ -24,7 +24,7 @@ class Weapon:
 
     @property
     def damage(self):
-        return uniform(self.min_damage, self.max_damage)
+        return round(uniform(self.min_damage, self.max_damage), 1)
 
 
 @dataclass
@@ -66,10 +66,10 @@ class Equipment:
     @staticmethod
     def _get_equipment_data() -> EquipmentData:
         # TODO этот метод загружает json в переменную EquipmentData
-        equipment_file = open("../data/equipment.json")
-        data = json.load(equipment_file)
-        equipment_schema = marshmallow_dataclass.class_schema(EquipmentData)
-        try:
-            return equipment_schema().load(data)
-        except marshmallow.exceptions.ValidationError:
-            raise ValueError
+        with open("./data/equipment.json") as equipment_file:
+            data = json.load(equipment_file)
+            equipment_schema = marshmallow_dataclass.class_schema(EquipmentData)
+            try:
+                return equipment_schema().load(data)
+            except marshmallow.exceptions.ValidationError as ex:
+                raise ex
