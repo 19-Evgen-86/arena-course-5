@@ -3,15 +3,6 @@ version: '3.8'
 services:
 
   app:
-    build:
-      context: .
-    command: gunicorn --bind 0.0.0.0:5000 wsgi:app
-    restart: always
-
-  nginx:
-    image: nginx:1.19.3
+    image: egrigorev/course_5:$GITHUB_REF_NAME-$GITHUB_RUN_ID
     ports:
       - 80:80
-    volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-    restart: always
