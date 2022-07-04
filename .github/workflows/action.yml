@@ -28,7 +28,7 @@ jobs:
           host: ${{ secrets.host }}
           username: ${{ secrets.username }}
           password: ${{ secrets.password }}
-          source: 'deploy/docker-compose.yaml'
+          source: 'deploy/docker-compose.yaml',"Dockerfile"
           target: "course_5"
           strip_components: 1
       - name: deploy app
