@@ -35,6 +35,7 @@ class Arena(metaclass=BaseSingleton):
         # TODO если Здоровья игроков в порядке то ничего не происходит
         if self.player.hp <= 0 and self.enemy.hp <= 0:
             self.battle_result = "Ничья"
+
         elif self.enemy.hp <= 0:
             self.battle_result = "Игрок выиграл битву"
         elif self.player.hp <= 0:

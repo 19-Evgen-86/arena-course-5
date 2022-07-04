@@ -106,6 +106,10 @@ class BaseUnit(ABC):
         return f"{self.name} экипирован броней {self.armor.name}"
 
     def _stamina_per_turn(self):
+        """
+         расчет стамины после удара
+        """
+
         stamina_turn_up = 1 * self.unit_class.stamina
         # выносливась после удара
         stamina = self.stamina - self.weapon.stamina_per_hit + stamina_turn_up
@@ -129,7 +133,7 @@ class BaseUnit(ABC):
 
         return target.get_damage(unit_damage)
 
-    def get_damage(self, damage: int) -> Optional[int]:
+    def get_damage(self, damage: int) -> int:
 
         if damage > 0:
             self.hp -= damage
