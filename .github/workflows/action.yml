@@ -1,9 +1,17 @@
 name: course_5
 on: [ push ]
 jobs:
-
-
-
+build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: clone code
+        uses: actions/checkout@v2
+      - name: docker build
+        run: docker build -t egrigorev/course_5:$GITHUB_REF_NAME-$GITHUB_RUN_ID .
+      - name: docker login
+        run: echo ${{ secrets.docker_token }} | docker login -u ${{ secrets.docker_USERNAME }} --password-stdin
+      - name: docker push
+        run: docker push egrigorev/course_5:$GITHUB_REF_NAME-$GITHUB_RUN_ID
   deploy:
     runs-on: ubuntu-latest
     steps:
@@ -15,7 +23,7 @@ jobs:
           host: ${{ secrets.host }}
           username: ${{ secrets.username }}
           password: ${{ secrets.password }}
-          source: 'docker-compose.yaml'
+          source: 'docker-compose.yaml',
           target: "course_5"
       - name: deploy app
         uses: appleboy/ssh-action@master
