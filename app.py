@@ -63,7 +63,6 @@ def pass_turn():
         result = arena.next_turn()
     else:
         result = arena.battle_result
-
     return render_template('fight.html', heroes=heroes, result=result)
 
 
